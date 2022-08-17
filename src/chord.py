@@ -119,16 +119,16 @@ class Chord:
         return colors
 
 
-
-N = 5
-chord = Chord()
-chord.make_arcs(np.random.random(N), 5, colors=['b', 'r', 'b', 'r', 'k'], arc_kwargs={'linewidth': 10})
-#chord.make_labels_horizontal(['along text','blong text','clong text','dlong text','elong text'])
-#chord.make_labels_adjusted(['along text','blong text','clong text','dlong text','elong text'])
-chord.make_labels(['along text','blong text','clong text','dlong text','elong text'], oriented=True, text_kwargs={'fontsize': 14, 'alpha': 0.1, 'weight': 'extra bold'})
-#chord.make_connections_from_center(np.random.random(size=(N,N)))
-chord.make_chord_from_one_unit(np.random.random(size=(N,N)), unit=1)
-
-
-chord.show()
-
+if __name__ == '__main__':
+    N = 5
+    chord = Chord()
+    chord.make_arcs(np.random.random(N), 5, colors=['b', 'r', 'b', 'r', 'k'], arc_kwargs={'linewidth': 10})
+    #chord.make_labels_horizontal(['along text','blong text','clong text','dlong text','elong text'])
+    #chord.make_labels_adjusted(['along text','blong text','clong text','dlong text','elong text'])
+    chord.make_labels(['along text','blong text','clong text','dlong text','elong text'], oriented=True, text_kwargs={'fontsize': 14, 'alpha': 0.1, 'weight': 'extra bold'})
+    #chord.make_connections_from_center(np.random.random(size=(N,N)))
+    chord.make_chord_from_one_unit(np.random.random(size=(N,N)), unit=1)
+    
+    
+    chord.show()
+    
