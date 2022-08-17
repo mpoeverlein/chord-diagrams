@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arc, PathPatch
 from matplotlib.path import Path
 
+
 def map_interaction(interaction, threshold=0):
     return interaction if abs(interaction) >= threshold else 0       
 
@@ -20,7 +21,7 @@ class Chord:
         self.ax.set_aspect(1)
         plt.axis('off')
 
-    def make_arcs(self, arc_lengths, gap_angle=5, colors=None, 
+    def make_arcs(self, arc_lengths, gap_angle=5, colors=None,
         arc_kwargs={'fill': False, 'linewidth': 1}):
 
         colors = self.get_colors(arc_lengths, colors)
@@ -51,7 +52,8 @@ class Chord:
     def make_chords_from_centers_of_arcs(self, interactions, 
         map_interaction_function=map_interaction, 
         map_interaction_color_function=map_interaction_color, 
-        symmetric=True):
+        symmetric=True,
+        path_kwargs={'fc': 'none'}):
 
         if symmetric:
             interactions = np.triu(interactions)
@@ -68,10 +70,10 @@ class Chord:
             pp1 = PathPatch(
                 Path([self.angle2coord(start_angle), (0,0), self.angle2coord(end_angle)],
                      [Path.MOVETO, Path.CURVE3, Path.CURVE3]),
-                     fc="none", 
                      transform=self.ax.transData, 
                      lw=map_interaction_function(interaction), 
-                     color=map_interaction_color_function(interaction))
+                     color=map_interaction_color_function(interaction),
+                     **path_kwargs)
 
             self.ax.add_patch(pp1)
 
