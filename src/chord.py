@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arc, PathPatch
 from matplotlib.path import Path
 
+def map_interaction(interaction, threshold=0):
+    return interaction if abs(interaction) >= threshold else 0       
+
+def map_interaction_color(interaction):
+    return 'k'
+
 
 class Chord:
     def __init__(self):
@@ -15,7 +21,8 @@ class Chord:
         plt.axis('off')
 
     def make_arcs(self, arc_lengths, gap_angle, colors=None, 
-                  arc_kwargs={'fill': False, 'linewidth': 1}):
+        arc_kwargs={'fill': False, 'linewidth': 1}):
+
         colors = self.get_colors(arc_lengths, colors)
         total_lengths = arc_lengths.sum()
         self.angle_centers = []
@@ -23,7 +30,6 @@ class Chord:
         for c, (arc_length, color) in enumerate(zip(arc_lengths, colors)):
             start_angle = arc_lengths[:c].sum() / total_lengths * 360 + gap_angle / 2
             end_angle = arc_lengths[:c+1].sum() / total_lengths * 360 - gap_angle / 2
-
             self.angle_centers.append(0.5 * (start_angle + end_angle))
             arc = Arc((0, 0), 2, 2, theta1=start_angle, theta2=end_angle, 
                       color=color, **arc_kwargs)
@@ -31,18 +37,22 @@ class Chord:
             self.ax.add_patch(arc)
 
     def make_labels(self, labels, colors=None, oriented=False, 
-                    text_kwargs={'fontsize': 12}):
+        text_kwargs={'fontsize': 12}):
+
         self.labels = []
         colors = self.get_colors(labels, colors)
         for label, angle_center, color in zip(labels, self.angle_centers, colors):
             (ha, va, rotation_angle) = self.angle2alignment(angle_center)
             rotation_angle = rotation_angle if oriented else 0
-
             coords = self.angle2coord(angle_center, r=1.1)
             text = self.ax.text(*coords, label, ha=ha, va=va, color=color, rotation=rotation_angle, **text_kwargs)
             self.labels.append(text)
 
-    def make_chords_from_centers_of_arcs(self, interactions, symmetric=True):
+    def make_chords_from_centers_of_arcs(self, interactions, 
+        map_interaction_function=map_interaction, 
+        map_interaction_color_function=map_interaction_color, 
+        symmetric=True):
+
         if symmetric:
             interactions = np.triu(interactions)
 
@@ -60,8 +70,8 @@ class Chord:
                      [Path.MOVETO, Path.CURVE3, Path.CURVE3]),
                      fc="none", 
                      transform=self.ax.transData, 
-                     lw=self.map_correlation(interaction), 
-                     color=self.map_correlation_color(interaction))
+                     lw=map_interaction_function(interaction), 
+                     color=map_interaction_color_function(interaction))
 
             self.ax.add_patch(pp1)
 
@@ -83,7 +93,6 @@ class Chord:
                 label.set(alpha=0.1)
             self.labels[unit].set(alpha=1)
     
-
     def show(self):
         plt.show()
 
@@ -109,13 +118,6 @@ class Chord:
 
         return colors
 
-    @staticmethod
-    def map_correlation(interaction, threshold=0):
-        return interaction if abs(interaction) >= threshold else 0       
-
-    @staticmethod
-    def map_correlation_color(interaction):
-        return 'k'
 
 
 N = 5
