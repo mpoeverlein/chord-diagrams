@@ -20,29 +20,25 @@ class Chord:
         self.angle_centers = []
         self.arcs = []
         for c, (arc_length, color) in enumerate(zip(arc_lengths, colors)):
-            start_angle = arc_lengths[:c].sum() / total_lengths * 360 + gap_angle
-            end_angle = arc_lengths[:c+1].sum() / total_lengths * 360
+            start_angle = arc_lengths[:c].sum() / total_lengths * 360 + gap_angle / 2
+            end_angle = arc_lengths[:c+1].sum() / total_lengths * 360 - gap_angle / 2
             self.angle_centers.append(0.5 * (start_angle + end_angle))
             arc = Arc((0, 0), 2, 2, theta1=start_angle, theta2=end_angle, fill=False, lw=linewidth, color=color)
             self.arcs.append(arc)
             self.ax.add_patch(arc)
 
-    def make_labels_horizontal(self, labels, colors=None):
+    def make_labels(self, labels, colors=None, oriented=False):
         self.labels = []
         colors = self.get_colors(labels, colors)
         for label, angle_center, color in zip(labels, self.angle_centers, colors):
             (ha, va, rotation_angle) = self.angle2alignment(angle_center)
-            self.labels.append(self.ax.text(*self.angle2coord(angle_center, r=1.1), label, fontsize=12, ha=ha, va=va, color=color))
-
-    def make_labels_adjusted(self, labels, colors=None):
-        self.labels = []
-        colors = self.get_colors(labels, colors)
-        for label, angle_center, color in zip(labels, self.angle_centers, colors):
-            (ha, va, rotation_angle) = self.angle2alignment(angle_center)
-            self.labels.append(self.ax.text(*self.angle2coord(angle_center, r=1.1), label, fontsize=12, ha=ha, va=va, color=color, rotation=rotation_angle))
+            if not oriented:
+                rotation_angle = 0
+            coords = self.angle2coord(angle_center, r=1.1)
+            text = self.ax.text(*coords, label, ha=ha, va=va, color=color, rotation=rotation_angle, fontsize=12)
+            self.labels.append(text)
 
     def make_chords_from_centers_of_arcs(self, interactions, symmetric=True):
-        print(interactions)
         if symmetric:
             interactions = np.triu(interactions)
 
@@ -99,8 +95,6 @@ class Chord:
 
     @staticmethod
     def get_colors(property_list, colors):
-        #if colors is None:
-        #    colors = 'k'
         colors = colors or 'k'
         if isinstance(colors, str):
             colors = len(property_list) * [colors]
@@ -120,7 +114,8 @@ N = 5
 chord = Chord()
 chord.make_arcs(np.random.random(N), 5, colors=['b', 'r', 'b', 'r', 'k'])
 #chord.make_labels_horizontal(['along text','blong text','clong text','dlong text','elong text'])
-chord.make_labels_adjusted(['along text','blong text','clong text','dlong text','elong text'])
+#chord.make_labels_adjusted(['along text','blong text','clong text','dlong text','elong text'])
+chord.make_labels(['along text','blong text','clong text','dlong text','elong text'], oriented=True)
 #chord.make_connections_from_center(np.random.random(size=(N,N)))
 chord.make_chord_from_one_unit(np.random.random(size=(N,N)), unit=1)
 
