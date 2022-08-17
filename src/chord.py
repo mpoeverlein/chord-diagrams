@@ -52,11 +52,13 @@ class Chord:
     def make_chords_from_centers_of_arcs(self, interactions, 
         map_interaction_function=map_interaction, 
         map_interaction_color_function=map_interaction_color, 
-        symmetric=True,
+        direction='forward',
         path_kwargs={'fc': 'none'}):
 
-        if symmetric:
+        if direction in ['forward', 'symmetric']:
             interactions = np.triu(interactions)
+        else:
+            interactions = np.tril(interactions)
 
         for start_index, end_index in np.ndindex(interactions.shape):
             if start_index == end_index: 
@@ -82,8 +84,9 @@ class Chord:
         old_interactions = interactions.copy()
         interactions = np.zeros_like(interactions)
         interactions[unit,:] = old_interactions[unit,:]
+        interactions[:,unit] = old_interactions[:,unit]
 
-        self.make_chords_from_centers_of_arcs(interactions, symmetric=False)
+        self.make_chords_from_centers_of_arcs(interactions, direction='forward')
 
         if highlight_arc:
             for arc in self.arcs:
