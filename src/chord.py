@@ -20,7 +20,7 @@ class Chord:
         self.ax.set_aspect(1)
         plt.axis('off')
 
-    def make_arcs(self, arc_lengths, gap_angle, colors=None, 
+    def make_arcs(self, arc_lengths, gap_angle=5, colors=None, 
         arc_kwargs={'fill': False, 'linewidth': 1}):
 
         colors = self.get_colors(arc_lengths, colors)
