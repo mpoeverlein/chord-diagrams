@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 
+from typing import Callable, Union
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, Arc, PathPatch
 from matplotlib.path import Path
 
+Vector = list[float]
+#ColorType = typing.List[str] | str | None
 
-def map_interaction(interaction, threshold=0):
+def map_interaction(interaction: float,
+        threshold: float = 0.0) -> float:
     return interaction if abs(interaction) >= threshold else 0       
 
-def map_interaction_color(interaction):
+def map_interaction_color(interaction: float) -> str:
     return 'k'
 
 
@@ -21,8 +25,8 @@ class Chord:
         self.ax.set_aspect(1)
         plt.axis('off')
 
-    def make_arcs(self, arc_lengths, gap_angle=5, colors=None,
-        arc_kwargs={'fill': False, 'linewidth': 1}):
+    def make_arcs(self, arc_lengths: Vector, gap_angle: float = 5.0, colors=None,
+            arc_kwargs: dict = {'fill': False, 'linewidth': 1}):
 
         colors = self.get_colors(arc_lengths, colors)
         total_lengths = arc_lengths.sum()
@@ -37,7 +41,7 @@ class Chord:
             self.arcs.append(arc)
             self.ax.add_patch(arc)
 
-    def make_labels(self, labels, colors=None, oriented=False, centered=False,
+    def make_labels(self, labels: list[str], colors=None, oriented: bool = False, centered: bool = False,
         text_kwargs={'fontsize': 12}):
 
         self.labels = []
@@ -51,11 +55,11 @@ class Chord:
             text = self.ax.text(*coords, label, ha=ha, va=va, color=color, rotation=rotation_angle, **text_kwargs)
             self.labels.append(text)
 
-    def make_chords_from_centers_of_arcs(self, interactions, 
-        map_interaction_function=map_interaction, 
-        map_interaction_color_function=map_interaction_color, 
-        direction='forward',
-        path_kwargs={'fc': 'none'}):
+    def make_chords_from_centers_of_arcs(self, interactions: Vector, 
+            map_interaction_function: Callable = map_interaction, 
+            map_interaction_color_function: Callable = map_interaction_color, 
+            direction: str = 'forward',
+            path_kwargs: dict = {'fc': 'none'}):
 
         if direction in ['forward', 'symmetric']:
             interactions = np.triu(interactions)
@@ -81,7 +85,8 @@ class Chord:
 
             self.ax.add_patch(pp1)
 
-    def make_chord_from_one_unit(self, interactions, unit=0, highlight_arc=True, highlight_label=False):
+    def make_chord_from_one_unit(self, interactions: Vector, unit: int = 0,
+            highlight_arc: bool = True, highlight_label: bool = False):
         # we select row of interactions by setting all other elements of the array to zero and then pass it on
         old_interactions = interactions.copy()
         interactions = np.zeros_like(interactions)
@@ -104,21 +109,21 @@ class Chord:
         plt.show()
 
     @staticmethod
-    def angle2coord(angle, r=1):
+    def angle2coord(angle: float, r: float = 1) -> tuple[float]:
         ''' given an angle in degrees and a radius, return the complex number r * e ^ (i*angle)'''
         phi = np.pi * angle / 180
         c = r * np.exp(1j*phi)
         return (c.real, c.imag)
     
     @staticmethod
-    def angle2alignment(angle):
+    def angle2alignment(angle: float) -> tuple[Union[str, float]]:
         if angle < 90: return ('left', 'bottom', angle)
         elif angle < 180: return ('right', 'bottom', angle+180)
         elif angle < 270: return ('right', 'top', angle+180)
         else: return ('left', 'top', angle)
 
     @staticmethod
-    def get_colors(property_list, colors):
+    def get_colors(property_list: Union[list[str], list[float]], colors) -> list[str]:
         colors = colors or 'k'
         if isinstance(colors, str):
             colors = len(property_list) * [colors]
