@@ -21,7 +21,7 @@ class Chord:
         self.ax.set_aspect(1)
         plt.axis('off')
 
-    def make_arcs(self, arc_lengths, gap_angle=5, colors=None,
+    def make_arcs(self, arc_lengths, gap_angle=5, colors='k',
         arc_kwargs={'fill': False, 'linewidth': 1}):
 
         colors = self.get_colors(arc_lengths, colors)
@@ -37,7 +37,7 @@ class Chord:
             self.arcs.append(arc)
             self.ax.add_patch(arc)
 
-    def make_labels(self, labels, colors=None, oriented=False, centered=False,
+    def make_labels(self, labels, colors='k', oriented=False, centered=False,
         text_kwargs={'fontsize': 12}):
 
         self.labels = []
@@ -119,7 +119,6 @@ class Chord:
 
     @staticmethod
     def get_colors(property_list, colors):
-        colors = colors or 'k'
         if isinstance(colors, str):
             colors = len(property_list) * [colors]
 
