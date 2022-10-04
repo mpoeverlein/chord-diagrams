@@ -94,8 +94,6 @@ class Chord:
         '''outgoing connections on the right side of the arc, incoming on the left side'''
         for start_index, end_index in np.ndindex(interactions.shape):
             interaction = interactions[start_index, end_index]
-            if interaction == 0: 
-                continue
             start_angle = 0.5 * (self.angle_starts[start_index] + self.angle_centers[start_index])
             end_angle = 0.5 * (self.angle_centers[end_index] + self.angle_ends[end_index])
 

@@ -8,7 +8,9 @@ def map_interaction_function(value):
     return 0 if value == 1 else 1
 
 def map_interaction_color_function(value):
-    d = {0: 'black', 0.5: 'red', 1: 'white', 2: 'blue'} 
+    d = {0.0: 'black', 0.5: 'red', 1: 'white', 2: 'blue'} 
+#    print(value)
+#    print(d[value])
     return d[value]
 
 df = pd.read_csv('pokemontypes.csv', index_col=0, skiprows=1)
@@ -29,5 +31,7 @@ chord.make_labels([s.upper() for s in pkmn_types], text_colors='white', backgrou
 
 #chord.make_chords_from_centers_of_arcs(interactions=df.values, map_interaction_function=map_interaction_function, map_interaction_color_function=map_interaction_color_function, direction='forward')
 chord.make_chords_both_directions(interactions=df.values, map_interaction_function=map_interaction_function, map_interaction_color_function=map_interaction_color_function)
+
+#print(df)
 
 chord.show()
