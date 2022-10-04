@@ -20,11 +20,11 @@ type_colors = ['#aaaa99', '#ff4422', '#3399ff', '#ffcc33', '#77cc55', '#66ccff',
                '#ff5599', '#aabb22', '#bbaa66', '#6666bb', '#7766ee', '#775544', '#aaaabb', '#ee99ee'     
         ]
 
-props = dict(boxstyle='round', facecolor='white', alpha=0.5)
 
 chord = chord.Chord()
 chord.make_arcs(arc_lengths)
-chord.make_labels(pkmn_types, colors=type_colors, text_kwargs={'fontsize': 10, 'bbox': props})
+#chord.make_labels(pkmn_types, text_colors=type_colors, text_kwargs={'fontsize': 10, 'bbox': props})
+chord.make_labels([s.upper() for s in pkmn_types], text_colors='white', background_colors=type_colors)
 
 chord.make_chords_from_centers_of_arcs(interactions=df.values, map_interaction_function=map_interaction_function, map_interaction_color_function=map_interaction_color_function, direction='forward')
 

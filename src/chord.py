@@ -37,17 +37,21 @@ class Chord:
             self.arcs.append(arc)
             self.ax.add_patch(arc)
 
-    def make_labels(self, labels, colors='k', oriented=False, centered=False,
-        text_kwargs={'fontsize': 12}):
+    def make_labels(self, labels, text_colors='k', background_colors='white', bbox_colors='grey', oriented=False, centered=False,
+        text_kwargs={'fontsize': 8}):
 
         self.labels = []
-        colors = self.get_colors(labels, colors)
-        for label, angle_center, color in zip(labels, self.angle_centers, colors):
+        text_colors = self.get_colors(labels, text_colors)
+        background_colors = self.get_colors(labels, background_colors)
+        bbox_colors = self.get_colors(labels, bbox_colors)
+        for label, angle_center, color, bg_color, bb_color in zip(labels, self.angle_centers, text_colors, background_colors, bbox_colors):
             (ha, va, rotation_angle) = self.angle2alignment(angle_center)
             rotation_angle = rotation_angle if oriented else 0
             if centered:
                 ha, va = 'center', 'center'
             coords = self.angle2coord(angle_center, r=1.1)
+            props = dict(facecolor=bg_color, edgecolor=bb_color, boxstyle='round', alpha=1)
+            text_kwargs.update({'bbox': props})
             text = self.ax.text(*coords, label, ha=ha, va=va, color=color, rotation=rotation_angle, **text_kwargs)
             self.labels.append(text)
 
