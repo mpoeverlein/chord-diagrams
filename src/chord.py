@@ -2,7 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, Arc, PathPatch
+from matplotlib.patches import Circle, Arc, PathPatch, FancyArrowPatch
 from matplotlib.path import Path
 
 
@@ -103,12 +103,13 @@ class Chord:
                 center_coordinates = (0,0)
 
 
-            pp1 = PathPatch(
+            pp1 = FancyArrowPatch(path=
                 Path([self.angle2coord(start_angle), center_coordinates, self.angle2coord(end_angle)],
                      [Path.MOVETO, Path.CURVE3, Path.CURVE3]),
                      transform=self.ax.transData, 
                      lw=map_interaction_function(interaction), 
                      color=map_interaction_color_function(interaction),
+                     arrowstyle="->,head_length=2,head_width=2",
                      **path_kwargs)
 
             self.ax.add_patch(pp1)
