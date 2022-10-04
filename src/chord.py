@@ -26,12 +26,14 @@ class Chord:
 
         colors = self.get_colors(arc_lengths, colors)
         total_lengths = arc_lengths.sum()
-        self.angle_centers = []
+        self.angle_centers, self.angle_starts, self.angle_ends = [], [], []
         self.arcs = []
         for c, (arc_length, color) in enumerate(zip(arc_lengths, colors)):
             start_angle = arc_lengths[:c].sum() / total_lengths * 360 + gap_angle / 2
             end_angle = arc_lengths[:c+1].sum() / total_lengths * 360 - gap_angle / 2
             self.angle_centers.append(0.5 * (start_angle + end_angle))
+            self.angle_starts.append(start_angle)
+            self.angle_ends.append(end_angle)
             arc = Arc((0, 0), 2, 2, theta1=start_angle, theta2=end_angle, 
                       color=color, **arc_kwargs)
             self.arcs.append(arc)
@@ -77,6 +79,34 @@ class Chord:
 
             pp1 = PathPatch(
                 Path([self.angle2coord(start_angle), (0,0), self.angle2coord(end_angle)],
+                     [Path.MOVETO, Path.CURVE3, Path.CURVE3]),
+                     transform=self.ax.transData, 
+                     lw=map_interaction_function(interaction), 
+                     color=map_interaction_color_function(interaction),
+                     **path_kwargs)
+
+            self.ax.add_patch(pp1)
+
+    def make_chords_both_directions(self, interactions,
+        map_interaction_function=map_interaction, 
+        map_interaction_color_function=map_interaction_color, 
+        path_kwargs={'fc': 'none'}):
+        '''outgoing connections on the right side of the arc, incoming on the left side'''
+        for start_index, end_index in np.ndindex(interactions.shape):
+            interaction = interactions[start_index, end_index]
+            if interaction == 0: 
+                continue
+            start_angle = 0.5 * (self.angle_starts[start_index] + self.angle_centers[start_index])
+            end_angle = 0.5 * (self.angle_centers[end_index] + self.angle_ends[end_index])
+
+            if start_index == end_index:
+                center_coordinates = self.angle2coord(self.angle_centers[start_index], r=1.05)
+            else:
+                center_coordinates = (0,0)
+
+
+            pp1 = PathPatch(
+                Path([self.angle2coord(start_angle), center_coordinates, self.angle2coord(end_angle)],
                      [Path.MOVETO, Path.CURVE3, Path.CURVE3]),
                      transform=self.ax.transData, 
                      lw=map_interaction_function(interaction), 
