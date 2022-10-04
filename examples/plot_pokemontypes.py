@@ -24,7 +24,7 @@ props = dict(boxstyle='round', facecolor='white', alpha=0.5)
 
 chord = chord.Chord()
 chord.make_arcs(arc_lengths)
-chord.make_labels(pkmn_types, colors=type_colors, text_kwargs={'fontsize': 12, 'bbox': props})
+chord.make_labels(pkmn_types, colors=type_colors, text_kwargs={'fontsize': 10, 'bbox': props})
 
 chord.make_chords_from_centers_of_arcs(interactions=df.values, map_interaction_function=map_interaction_function, map_interaction_color_function=map_interaction_color_function, direction='forward')
 

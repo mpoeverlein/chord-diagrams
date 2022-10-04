@@ -112,9 +112,11 @@ class Chord:
     
     @staticmethod
     def angle2alignment(angle):
-        if angle < 90: return ('left', 'bottom', angle)
+        if angle < 60: return ('left', 'bottom', angle)
+        elif angle < 120: return ('center', 'bottom', angle)
         elif angle < 180: return ('right', 'bottom', angle+180)
-        elif angle < 270: return ('right', 'top', angle+180)
+        elif angle < 240: return ('right', 'top', angle+180)
+        elif angle < 300: return ('center', 'top', angle+180)
         else: return ('left', 'top', angle)
 
     @staticmethod
